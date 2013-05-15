@@ -1,0 +1,40 @@
+#!/usr/bin/python
+
+import cgitb, cgi
+
+cgitb.enable()
+
+data = cgi.FieldStorage()
+
+print "Content-type: text/html\n"
+
+try:
+   person =  data.getvalue("person") #one way to get the value
+   years = data["years"].value #another way to get the value
+   print "Hi,", person, " you will be ", int(years)+1, "years old next year!"
+except:
+   print "<p>Hello</p>"
+
+
+print """
+<html>
+<head>
+  <title>My first HTML form</title>
+</head>
+<body>
+  <form>
+    <table border>
+      <tr> <td> Name </td>
+           <td> <input type=text name=person> </td> 
+      </tr>
+      <tr> <td> Age </td>
+           <td align=right>
+              <input type=text name=years size=4 maxlength=3> 
+           </td> 
+      </tr>
+    </table>
+    Press <input type=submit name=action value=Proceed> to send.
+  </form>
+</body>
+</html>
+"""

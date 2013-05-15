@@ -1,0 +1,39 @@
+#!/usr/bin/python
+
+print "Content-type: text/html\n"
+
+(fun, arg, action, message, balance) = ("", "", "", "", None)
+
+import cgi, cgitb
+cgitb.enable()
+
+x = cgi.FieldStorage()
+
+if x.has_key("fun"): fun = x["fun"].value
+if x.has_key("arg"): arg = x["arg"].value
+if x.has_key("action"): action = x["action"].value
+if x.has_key("balance"): balance = x["balance"].value
+
+if balance == None or action == "Reset":
+  balance = 0
+else:
+  balance = int(balance)
+  if fun == "add":
+    balance += int(arg)
+  elif fun == "sub":
+    balance -= int(arg)
+  else:
+    pass
+
+message = "Balance is currently %s" % (balance)
+
+print """
+  <form>
+    %s <p>
+    What: <input type=text name=fun>
+    With: <input type=text name=arg>
+    <input type=submit name=action value=Proceed>
+    <input type=submit name=action value=Reset>
+    <input type=hidden name=balance value=%s>
+  </form>
+""" % (message, balance)

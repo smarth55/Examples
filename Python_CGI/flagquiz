@@ -1,0 +1,62 @@
+#!/usr/bin/python
+
+print "Content-type: text/html\n"
+
+import cgi, cgitb, random
+cgitb.enable()
+
+x = cgi.FieldStorage()
+
+(flags, count, score, curflag, action, answer, correct, countries) = (None, 0, 0, "", "", "", "", [ "Brazil", "Italy", "Russia", "China", "Australia", "Spain", "United States", "South Africa" ])
+
+if x.has_key("flags"): flags = x["flags"].value
+if x.has_key("count"): count = x["count"].value
+if x.has_key("score"): score = x["score"].value
+if x.has_key("action"): action = x["action"].value
+if x.has_key("answer"): answer = x["answer"].value
+if x.has_key("correct"): correct = x["correct"].value
+
+if flags == None or action == "Restart":
+  random.shuffle(countries)
+  flags = countries
+  curflag = flags[0]
+  count = 0
+else:
+  flags = flags.split(",")
+  flags = flags[1:]
+  try:
+    curflag = flags[0]
+  except:
+    pass
+  count = int(count) + 1 
+
+if answer == "" and correct == "":
+  message = "Welcome!"
+elif answer.lower() == correct.lower():
+  message = "Correct!"
+  score = int(score) + 1
+elif answer.lower() != correct.lower():
+  message = "That was incorrect."
+
+flags = ",".join(flags)
+
+if count in range(len(countries)):
+  print "%s Current score: %s/%s" % (message, score, count)
+  print "<p><img src=\"/images/" + curflag + ".png\"/>"
+  print """
+    <form>  
+      <p>Enter the country name: <input type=text name=answer>
+      then <input type=submit name=action value=Submit>
+      <input type=hidden name=flags value="%s">
+      <input type=hidden name=count value="%s">
+      <input type=hidden name=correct value="%s">
+      <input type=hidden name=score value="%s">
+    </form>  
+  """ % (flags, count, curflag, score)
+else:
+  print """
+  <form>
+    <p>The game is over. Final score: %s/%s
+    <p>Click <input type=submit name=action value=Restart> to play again.
+  </form>
+  """ % (score, count)

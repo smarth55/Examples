@@ -1,0 +1,7 @@
+#!/usr/bin/python
+
+import server, cgitb
+cgitb.enable()
+
+program = server.Two()
+program.execute()
