@@ -10,6 +10,7 @@
 		.folder	{
 			position:relative;
 			z-index:5;
+			list-style:none;
 			max-height:0px;
 			opacity:0;
 			transition: max-height 0.5s, opacity 0.5s;
@@ -46,7 +47,7 @@
 			else $color = "black";
 			
 			// file or directory
-			if ($code[1] === "f" || ($code[0] === "*" && $code[1] === "d")) echo "<li class=\"" . $color . "\">" . $filename . "</li>"; // file
+			if ($code[1] === "f" || ($code[0] === "*" && $code[1] === "d")) echo "<li class=\"" . $color . "\">" .basename($filename). "</li>"; // file
 			if ($code[1] === "d" && $code[0] !== "*") {
 				
 				$dir_level = substr_count($filename,"/");
@@ -65,20 +66,19 @@
 		}
 	}
 	function printDir($filename,$color){
-		echo "<li class=\"".$color."\" style=\"cursor:pointer;position:relative;z-index:100;\" onclick=\"togglefolder('".$filename."')\">".$filename."</li><ul class=\"folder\" id=\"".$filename."\">";
+		if ($filename !== "./")	$filename = basename($filename);
+		echo "<li class=\"".$color."\" style=\"cursor:pointer;position:relative;z-index:100;\" onclick=\"togglefolder('".$filename."')\"> [+]".$filename."</li><ul class=\"folder\" id=\"".$filename."\">";
 	}
 	?>
 	
 	<ul>
+	updated to use basename()
 	<?php
-	
 	$file = fopen("rsync_output.txt", "r") or exit("Unable to open file!");
 	fgets($file);
 	printdata($file);
 	fclose($file);
-	
 	?>
-	
 	</ul>
 </body>
 </html>
